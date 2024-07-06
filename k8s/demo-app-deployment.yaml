@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: demo-app
+  name: demo-app
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: demo-app
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demo-app
+  name: demo-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+      - image: demo-app:latest
+        imagePullPolicy: IfNotPresent
+        name: demo-app
+#        env:
+#          # Use secret in real usage
+#          - name: DATABASE_URL
+#            value: "jdbc:mysql://mysql.default.svc.cluster.local:3306/spring_boot_db?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
+#          - name: DATABASE_USERNAME
+#            value: "root"
+#          - name: DATABASE_PASSWORD
+#            value: "password"
+#          - name: DATABASE_DRIVER
+#            value: "com.mysql.cj.jdbc.Driver"
+#          - name: HIBERNATE_DIALECT
+#            value: "org.hibernate.dialect.MySQL8Dialect"
